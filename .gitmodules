@@ -1,0 +1,3 @@
+[submodule "roles/oh-my-zsh-p10k"]
+	path = roles/oh-my-zsh-p10k
+	url = https://github.com/emouty/ansible-role-oh-my-zsh-p10k.git
