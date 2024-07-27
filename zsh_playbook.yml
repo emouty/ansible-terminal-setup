@@ -1,0 +1,69 @@
+- name: Update web servers
+  hosts: pelican
+  vars:
+    users:
+      - "{{ ansible_user }}"
+    p10k_src_file: custom.p10k.zsh
+    oh_my_zsh_plugins:
+      - brew
+      - asdf
+      - aliases
+      - autoupdate
+      - common-aliases
+      - docker
+      - git
+      - history
+      - sudo
+      - you-should-use
+      - zsh-autosuggestions
+      - zsh-syntax-highlighting
+  tasks:
+    - name: Install zsh and oh my zsh
+      ansible.builtin.import_role:
+        name: oh-my-zsh-p10k
+    - name: Clone zsh-you-should-use plugin
+      ansible.builtin.git:
+        repo: 'https://github.com/MichaelAquilina/zsh-you-should-use.git'
+        version: master
+        dest: '$HOME/.oh-my-zsh/custom/plugins/you-should-use'
+    - name: Clone autoupdate plugin
+      ansible.builtin.git:
+        repo: 'https://github.com/TamCore/autoupdate-oh-my-zsh-plugins'
+        version: master
+        dest: $HOME/.oh-my-zsh/custom/plugins/autoupdate'
+    - name: Install a list of packages
+      become: true
+      ansible.builtin.apt:
+        pkg:
+          - fzf
+          - zoxide
+          - bat
+          - avahi-daemon
+          - python3-pip
+          - pipx
+    - name: Ensure pipx is on PATH
+      ansible.builtin.command: python3 -m pipx ensurepath
+      register: my_output
+      changed_when: my_output.rc != 0
+    - name: Ensure zoxide init line is present in .zshrc
+      ansible.builtin.lineinfile:
+        path: "$HOME/.zshrc"
+        line: 'eval "$(zoxide init --cmd cd zsh)"'
+        insertafter: '^compinit'
+    - name: Ensure reload profile is present in .zshrc
+      ansible.builtin.lineinfile:
+        path: "$HOME/.zshrc"
+        line: 'alias reload_profile="source ~/.zshrc"'
+    - name: Ensure ccat alias is present in .zshrc
+      ansible.builtin.lineinfile:
+        path: "$HOME/.zshrc"
+        line: 'alias ccat="batcat --style=plain -f -u -P"'
+        state: present
+    - name: Install tldr
+      community.general.pipx:
+        name: tldr
+        install_apps: true
+    - name: Install topgrade
+      community.general.pipx:
+        name: topgrade
+        install_apps: true
