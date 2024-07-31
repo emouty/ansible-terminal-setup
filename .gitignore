@@ -9,6 +9,7 @@ collections/ansible_collections/*
 collections/ansible_collections/emouty/*
 !collections/ansible_collections/emouty/ansible-setup-terminal
 *.pwd
+.idea
 # https://raw.githubusercontent.com/github/gitignore/main/Python.gitignore
 # Byte-compiled / optimized / DLL files
 __pycache__/

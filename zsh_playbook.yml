@@ -41,7 +41,7 @@
           - avahi-daemon
           - python3-pip
           - pipx
-    - name: Ensure pipx is on PATH
+    - name: Ensure pipx folder is on PATH
       ansible.builtin.command: python3 -m pipx ensurepath
       register: my_output
       changed_when: my_output.rc != 0
@@ -58,6 +58,11 @@
       ansible.builtin.lineinfile:
         path: "$HOME/.zshrc"
         line: 'alias ccat="batcat --style=plain -f -u -P"'
+        state: present
+    - name: Ensure autosuggest highlight style is present in .zshrc
+      ansible.builtin.lineinfile:
+        path: "$HOME/.zshrc"
+        line: 'ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#8a8a8a,underline"'
         state: present
     - name: Install tldr
       community.general.pipx:
