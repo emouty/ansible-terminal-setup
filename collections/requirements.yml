@@ -17,4 +17,3 @@ collections:
 roles:
   - name: tomereli.oh_my_zsh_p10k
   - name: monolithprojects.homebrew
-
