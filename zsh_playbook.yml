@@ -33,14 +33,15 @@
         dest: $HOME/.oh-my-zsh/custom/plugins/autoupdate'
     - name: Install a list of packages
       become: true
-      ansible.builtin.apt:
-        pkg:
+      ansible.builtin.package:
+        name:
           - fzf
           - zoxide
           - bat
           - avahi-daemon
           - python3-pip
           - pipx
+        state: present
     - name: Ensure pipx folder is on PATH
       ansible.builtin.command: python3 -m pipx ensurepath
       register: my_output
