@@ -13,10 +13,8 @@ collections:
     type: git
 
   - name: manala.roles
+  - name: community.general
+roles:
   - name: tomereli.oh_my_zsh_p10k
   - name: monolithprojects.homebrew
-  - name: community.general
-  # TO-DO: User's own collections can also be specified as mention below.
-  # - name: my_organization.my_collection
-  #   version: 1.2.3
-  #   source: https://github.com/my_organization/my_collection.git
+
