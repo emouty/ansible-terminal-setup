@@ -21,6 +21,15 @@
     - name: Install zsh and oh my zsh
       ansible.builtin.import_role:
         name: oh-my-zsh-p10k
+    - name: Install shadow package (manage user shell)
+      community.general.apk:
+        name: shadow
+        state: present
+      when: ansible_facts['os_family'] == 'Alpine'
+    - name: Change user shell (Alpine)
+      ansible.builtin.command: chsh -s /bin/zsh {{ ansible_user }}
+      changed_when: true
+      when: ansible_facts['os_family'] == 'Alpine'
     - name: Clone zsh-you-should-use plugin
       ansible.builtin.git:
         repo: 'https://github.com/MichaelAquilina/zsh-you-should-use.git'
@@ -30,7 +39,7 @@
       ansible.builtin.git:
         repo: 'https://github.com/TamCore/autoupdate-oh-my-zsh-plugins'
         version: master
-        dest: $HOME/.oh-my-zsh/custom/plugins/autoupdate'
+        dest: '$HOME/.oh-my-zsh/custom/plugins/autoupdate'
     - name: Install a list of packages
       become: true
       ansible.builtin.package:
@@ -79,5 +88,11 @@
       become: true
       ansible.builtin.package:
         name: topgrade
+        state: present
+      when: ansible_facts['os_family'] == 'Alpine'
+    - name: Install ncurses (zsh plugins libs missing from Alpine)
+      become: true
+      ansible.builtin.package:
+        name: ncurses
         state: present
       when: ansible_facts['os_family'] == 'Alpine'
