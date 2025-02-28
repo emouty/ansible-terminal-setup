@@ -1,5 +1,5 @@
 - name: Update web servers
-  hosts: all
+  hosts: arr-suite
   vars:
     users:
       - "{{ ansible_user }}"
@@ -38,8 +38,8 @@
           - fzf
           - zoxide
           - bat
-          - avahi-daemon
-          - python3-pip
+          - "{{ 'avahi' if ansible_facts['os_family'] == 'Alpine' else 'avahi-daemon' }}"
+          - "{{ 'py3-pip' if ansible_facts['os_family'] == 'Alpine' else 'python3-pip' }}"
           - pipx
         state: present
     - name: Ensure pipx folder is on PATH
@@ -69,7 +69,15 @@
       community.general.pipx:
         name: tldr
         install_apps: true
-    - name: Install topgrade
+    - name: Install topgrade (non-Alpine)
       community.general.pipx:
         name: topgrade
         install_apps: true
+      when: ansible_facts['os_family'] != 'Alpine'
+
+    - name: Install topgrade (Alpine)
+      become: true
+      ansible.builtin.package:
+        name: topgrade
+        state: present
+      when: ansible_facts['os_family'] == 'Alpine'
